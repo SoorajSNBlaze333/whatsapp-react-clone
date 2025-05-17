@@ -10,14 +10,22 @@ import { AnimatePresence, motion } from "motion/react";
 import Profile from "../profile";
 import { useContacts } from "@/app/hooks/use-contacts";
 import { Contact } from "@/app/context/contacts-provider";
+import { useEffect, useRef } from "react";
 
 export default function NewChatWindow() {
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const { isNewChatWindowOpen, closeNewChatWindow } = useNewChat();
   const { dictionary, filterContacts, search } = useContacts();
   // TODO: change this to profile user
   const user = {
     displayName: "Clara Nguyen",
   };
+
+  useEffect(() => {
+    if (isNewChatWindowOpen && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isNewChatWindowOpen]);
 
   return (
     <AnimatePresence>
@@ -41,6 +49,7 @@ export default function NewChatWindow() {
                 className="rounded-full w-full p-2 px-4 outline-none bg-white/10 hover:ring-[1px] hover:ring-gray-600 focus:ring-2 focus:ring-green-500 ring-0 ring-transparent focus:bg-transparent placeholder-gray-400 focus:placeholder-gray-400 text-white"
                 placeholder="Search for name or number"
                 onChange={(event) => filterContacts(event.target.value)}
+                ref={inputRef}
               />
             </section>
             <section className="w-full h-full overflow-y-scroll scrollbar-hide pb-4">
