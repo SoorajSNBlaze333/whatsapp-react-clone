@@ -1,10 +1,13 @@
+"use client";
+
 import { PropsWithChildren, useRef, useState } from "react";
 
 type TooltipWrapperProps = {
   selected?: boolean;
   onClick?: () => void;
   isProfile?: boolean;
-  tab: string;
+  tab?: string;
+  showTooltip?: boolean;
 };
 
 export default function TooltipWrapper({
@@ -13,10 +16,11 @@ export default function TooltipWrapper({
   tab,
   onClick,
   children,
+  showTooltip = true,
 }: PropsWithChildren<TooltipWrapperProps>) {
   const position = "right";
   const offset = 4;
-  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const wrapperRef = useRef<HTMLButtonElement | null>(null);
   const [isHovering, setIsHovering] = useState(false);
 
   const tooltipPositionStyles = () => {
@@ -47,11 +51,12 @@ export default function TooltipWrapper({
       onClick={onClick}
       onMouseOver={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
+      ref={wrapperRef}
     >
-      <div ref={wrapperRef}>{children}</div>
-      {isHovering && (
+      {children}
+      {showTooltip && isHovering && (
         <div
-          className={`absolute ${getOffset()} bg-white text-xs font-semibold py-1 px-2 rounded-full capitalize`}
+          className={`absolute ${getOffset()} bg-white text-xs font-semibold py-1 px-2 rounded-full capitalize z-50`}
           style={tooltipPositionStyles()}
         >
           {tab}

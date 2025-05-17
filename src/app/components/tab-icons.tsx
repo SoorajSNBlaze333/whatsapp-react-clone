@@ -3,7 +3,7 @@ import TooltipWrapper from "./tooltip-wrapper";
 import { useTab } from "../hooks/use-tab";
 import TabIcon from "./tab-icon";
 
-export default function IconsBar() {
+export default function TabIcons() {
   const { selectedTab, selectTab, topTabs } = useTab();
 
   return (
@@ -41,7 +41,7 @@ export default function IconsBar() {
         >
           <TabIcon tab="settings" />
         </TooltipWrapper>
-        <TooltipWrapper tab="profile" isProfile>
+        <TooltipWrapper tab="profile" onClick={() => selectTab("profile")}>
           <Profile />
         </TooltipWrapper>
       </section>
