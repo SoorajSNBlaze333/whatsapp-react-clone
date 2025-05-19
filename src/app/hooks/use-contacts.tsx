@@ -5,7 +5,7 @@ export const useContacts = () => {
   const ctx = useContext(ContactsContext);
 
   if (!ctx) {
-    throw new Error("useContext must be used within a ContactsProvider");
+    throw new Error("useContacts must be used within a ContactsProvider");
   }
   return ctx;
 };
