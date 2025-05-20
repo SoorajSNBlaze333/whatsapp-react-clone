@@ -1,4 +1,9 @@
-export default function Profile({ size }: { size?: string }) {
+import { PropsWithChildren } from "react";
+
+export default function Profile({
+  children,
+  size,
+}: PropsWithChildren<{ size?: string }>) {
   const sizeClass =
     {
       6: "w-6 h-6",
@@ -13,7 +18,7 @@ export default function Profile({ size }: { size?: string }) {
     <section
       className={`${sizeClass} overflow-hidden relative flex justify-center items-center rounded-full cursor-pointer`}
     >
-      <div className="w-full h-full bg-red-400"></div>
+      {children ?? <div className="w-full h-full bg-red-400"></div>}
     </section>
   );
 }

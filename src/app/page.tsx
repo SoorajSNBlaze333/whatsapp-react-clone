@@ -6,22 +6,25 @@ import TabPanel from "./components/tab-panel";
 import ChatsProvider from "./context/chats-provider";
 import ContactsProvider from "./context/contacts-provider";
 import NewChatProvider from "./context/new-chat-provider";
+import ProfileProvider from "./context/profile-provider";
 import TabProvider from "./context/tab-provider";
 
 export default function Home() {
   return (
-    <TabProvider>
-      <ContactsProvider>
-        <ChatsProvider>
-          <NewChatProvider>
-            <section className="h-full w-full grid grid-cols-24">
-              <TabIcons />
-              <TabPanel />
-              <TabActivePanel />
-            </section>
-          </NewChatProvider>
-        </ChatsProvider>
-      </ContactsProvider>
-    </TabProvider>
+    <ProfileProvider>
+      <TabProvider>
+        <ContactsProvider>
+          <ChatsProvider>
+            <NewChatProvider>
+              <section className="h-full w-full grid grid-cols-24">
+                <TabIcons />
+                <TabPanel />
+                <TabActivePanel />
+              </section>
+            </NewChatProvider>
+          </ChatsProvider>
+        </ContactsProvider>
+      </TabProvider>
+    </ProfileProvider>
   );
 }

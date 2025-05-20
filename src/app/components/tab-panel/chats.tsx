@@ -1,22 +1,119 @@
 import {
   ChatDotsIcon,
+  CheckIcon,
   ChecksIcon,
   DotsThreeVerticalIcon,
+  UsersThreeIcon,
+  WarningCircleIcon,
 } from "@phosphor-icons/react";
 import TooltipWrapper from "../tooltip-wrapper";
 import { useNewChat } from "@/app/hooks/use-new-chat";
 import { useChats } from "@/app/hooks/use-chats";
-import { Chat, Filters } from "@/app/context/chats-provider";
+import { Chat, Filters, Message } from "@/app/context/chats-provider";
 import Profile from "../profile";
 import dayjs from "dayjs";
+import { useProfile } from "@/app/hooks/use-profile";
+import { useContacts } from "@/app/hooks/use-contacts";
 
 export default function Chats({ selectedTab }: { selectedTab: string }) {
+  const {
+    profile: { blueTickEnabled },
+  } = useProfile();
   const { openNewChatWindow } = useNewChat();
-  const { filter, updateFilter, chats } = useChats();
+  const {
+    filter,
+    updateFilter,
+    chats: { filtered, isLoading },
+  } = useChats();
+  const { getContact } = useContacts();
 
   const formatTime = (timestamp: number) => {
     const now = dayjs(timestamp);
     return now.format("h:mm A");
+  };
+
+  const renderMessageStatus = (message: Message) => {
+    if (!message.isSentFromUser) {
+      return null;
+    } else {
+      if (message.read) {
+        if (blueTickEnabled) {
+          return <ChecksIcon className="size-5 text-blue-400" />;
+        }
+        return <ChecksIcon className="size-5 text-white/40" />;
+      } else if (message.delivered) {
+        return <ChecksIcon className="size-5 text-white/40" />;
+      } else if (message.sent) {
+        return <CheckIcon className="size-4 text-white/40" />;
+      }
+      return <WarningCircleIcon className="size-5 text-white/40" />;
+    }
+  };
+
+  const renderChat = (chat: Chat) => {
+    const name =
+      typeof chat.contactId === "string"
+        ? getContact(chat.contactId)?.displayName
+        : chat.groupName;
+    const lastMessage = chat.messages[chat.messages.length - 1];
+
+    return (
+      <div className="grid grid-cols-6 w-full gap-4 p-2.5 hover:bg-white/10 rounded-xl cursor-pointer">
+        <div className="col-span-1">
+          {!chat.group ? (
+            <Profile size="12" />
+          ) : (
+            <Profile size="12">
+              <div className="h-full w-full flex justify-center items-center bg-white/50">
+                <UsersThreeIcon className="size-7 text-white" weight="fill" />
+              </div>
+            </Profile>
+          )}
+        </div>
+        <div className="col-span-3 flex flex-col justify-center items-start w-full">
+          <p className="text-white">{name}</p>
+          <div className="flex justify-start items-center gap-1 w-full">
+            {renderMessageStatus(lastMessage)}
+            <p
+              className={`text-sm ${
+                chat.read || lastMessage.isSentFromUser
+                  ? "text-white/55"
+                  : "text-white font-semibold"
+              } whitespace-nowrap truncate text-ellipsis overflow-hidden`}
+            >
+              {chat.group
+                ? `${getContact(lastMessage.contactId)?.displayName}: ${
+                    lastMessage.message
+                  }`
+                : lastMessage.message}
+            </p>
+          </div>
+        </div>
+        <div className="col-span-2 flex flex-col justify-center items-end">
+          <p
+            className={`text-xs font-semibold ${
+              chat.read || lastMessage.isSentFromUser
+                ? "text-white/55"
+                : "text-emerald-400"
+            }`}
+          >
+            {formatTime(lastMessage.timestamp)}
+          </p>
+        </div>
+      </div>
+    );
+  };
+
+  const renderChats = () => {
+    if (isLoading) {
+      return (
+        <div className="w-full h-full flex justify-center items-center text-white/50">
+          Loading...
+        </div>
+      );
+    }
+
+    return filtered.map(renderChat);
   };
 
   return (
@@ -58,38 +155,7 @@ export default function Chats({ selectedTab }: { selectedTab: string }) {
           ))}
         </div>
       </section>
-      <section className="w-full flex flex-col gap-1">
-        {chats.filtered.map((chat: Chat) => (
-          <div
-            key={chat.id}
-            className="grid grid-cols-6 w-full gap-4 p-2.5 hover:bg-white/10 rounded-xl cursor-pointer"
-          >
-            <div className="col-span-1">
-              <Profile size="12" />
-            </div>
-            <div className="col-span-3 flex flex-col justify-center items-start w-full">
-              <p className="text-white">{chat.contact.name} (You)</p>
-              <div className="flex justify-start items-center gap-1 w-full">
-                <ChecksIcon
-                  className={`size-5 ${
-                    chat.lastMessage.blueTickEnabled && chat.lastMessage.read
-                      ? "text-blue-400"
-                      : "text-white/30"
-                  }`}
-                />
-                <p className="text-sm text-white/55 whitespace-nowrap truncate text-ellipsis overflow-hidden">
-                  {chat.lastMessage.message}
-                </p>
-              </div>
-            </div>
-            <div className="col-span-2 flex flex-col justify-center items-end">
-              <p className="text-xs font-semibold text-white/55">
-                {formatTime(chat.lastMessage.timestamp)}
-              </p>
-            </div>
-          </div>
-        ))}
-      </section>
+      <section className="w-full flex flex-col gap-1">{renderChats()}</section>
     </section>
   );
 }

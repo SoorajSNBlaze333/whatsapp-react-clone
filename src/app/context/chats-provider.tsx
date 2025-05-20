@@ -7,22 +7,25 @@ export enum Filters {
   GROUPS = "groups",
 }
 
+export type Message = {
+  contactId: string;
+  message: string;
+  timestamp: number;
+  isSentFromUser: boolean;
+  read?: boolean;
+  sent?: boolean;
+  delivered?: boolean;
+};
+
 export type Chat = {
   id: string;
-  contact: {
-    id: string;
-    name: string;
-    avatar: string;
-  };
+  contactId: string | string[];
+  groupName?: string;
+  groupAvatar?: string;
   read: boolean;
   group: boolean;
   favorite: boolean;
-  lastMessage: {
-    message: string;
-    timestamp: number;
-    blueTickEnabled: boolean;
-    read: boolean;
-  };
+  messages: Message[];
 };
 
 export type Chats = {

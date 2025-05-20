@@ -17,6 +17,7 @@ export type Contacts = {
 
 export type ContactsContextType = Contacts & {
   filterContacts: (search: string) => void;
+  getContact: (id: string) => Contact | undefined;
 };
 
 export const ContactsContext = createContext<ContactsContextType | undefined>(
@@ -97,8 +98,19 @@ export default function ContactsProvider({ children }: PropsWithChildren) {
     }));
   };
 
+  const getContact = (id: string) => {
+    let ctcts = contacts.contacts;
+    if (contacts.filteredContacts.length > 0) {
+      ctcts = contacts.filteredContacts;
+    }
+    const contact = ctcts.find((contact: Contact) => contact.id === id);
+    return contact;
+  };
+
   return (
-    <ContactsContext.Provider value={{ ...contacts, filterContacts }}>
+    <ContactsContext.Provider
+      value={{ ...contacts, filterContacts, getContact }}
+    >
       {children}
     </ContactsContext.Provider>
   );
