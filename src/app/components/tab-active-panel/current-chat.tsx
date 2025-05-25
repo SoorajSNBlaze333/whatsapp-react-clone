@@ -58,7 +58,7 @@ export default function CurrentChat() {
   };
 
   const renderOnline = () => {
-    return <p className="text-sm text-white/50">online</p>;
+    return <p className="text-xs text-white/50">online</p>;
   };
 
   const renderContact = () => {
@@ -73,9 +73,9 @@ export default function CurrentChat() {
 
       return (
         <div className="h-auto w-full flex gap-4 justify-start items-center p-3 px-4">
-          <Profile size="12">
+          <Profile size="10">
             <div className="h-full w-full flex justify-center items-center bg-white/50">
-              <UsersThreeIcon className="size-7 text-white" weight="fill" />
+              <UsersThreeIcon className="size-6 text-white" weight="fill" />
             </div>
           </Profile>
           <div className="flex flex-col">
@@ -97,7 +97,6 @@ export default function CurrentChat() {
   };
 
   const renderChatMessage = (message: Message) => {
-    console.log(group);
     if (group) {
       return (
         <div className="flex justify-between items-start gap-2">
