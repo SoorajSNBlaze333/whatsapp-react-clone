@@ -11,7 +11,25 @@ export async function GET() {
       messages: [
         {
           contactId: "F66d8fn",
-          message: "Please send me the documents asap!",
+          message: "Hi",
+          timestamp: 1747662290,
+          isSentFromUser: true,
+          delivered: true,
+          sent: true,
+          read: true,
+        },
+        {
+          contactId: "F66d8fn",
+          message: "When do you want me to send the documents?",
+          timestamp: 1747662290,
+          isSentFromUser: true,
+          delivered: true,
+          sent: true,
+          read: true,
+        },
+        {
+          contactId: "F66d8fn",
+          message: "Could you please send them right now?",
           timestamp: 1747662290,
           isSentFromUser: false,
         },
@@ -86,7 +104,7 @@ export async function GET() {
     },
     {
       id: "zm08t63",
-      contactId: ["8KYNlgL", "LqN7Cf7", "c3xMk2F"],
+      contactId: ["8KYNlgL", "LqN7Cf7", "9tkhacj"],
       groupName: "Three of us",
       groupAvatar: "",
       read: true,
@@ -94,8 +112,23 @@ export async function GET() {
       favorite: true,
       messages: [
         {
+          contactId: "9tkhacj",
+          message: "This message is from Me",
+          timestamp: 1747662290,
+          isSentFromUser: true,
+          sent: true,
+          delivered: true,
+          read: false,
+        },
+        {
           contactId: "8KYNlgL",
-          message: "This message is from a group",
+          message: "This message is from a Alfred",
+          timestamp: 1747662290,
+          isSentFromUser: false,
+        },
+        {
+          contactId: "LqN7Cf7",
+          message: "This message is from Isabella",
           timestamp: 1747662290,
           isSentFromUser: false,
         },

@@ -1,24 +1,19 @@
 import {
   ChatDotsIcon,
-  CheckIcon,
-  ChecksIcon,
   DotsThreeVerticalIcon,
   UsersThreeIcon,
-  WarningCircleIcon,
 } from "@phosphor-icons/react";
 import TooltipWrapper from "../tooltip-wrapper";
 import { useNewChat } from "@/app/hooks/use-new-chat";
 import { useChats } from "@/app/hooks/use-chats";
-import { Chat, Filters, Message } from "@/app/context/chats-provider";
+import { Chat, Filters } from "@/app/context/chats-provider";
 import Profile from "../profile";
-import dayjs from "dayjs";
-import { useProfile } from "@/app/hooks/use-profile";
 import { useContacts } from "@/app/hooks/use-contacts";
+import { useCurrentChat } from "@/app/hooks/use-current-chat";
+import { formatTime } from "@/app/utils";
+import MessageStatusIcon from "../message-status-icon";
 
 export default function Chats({ selectedTab }: { selectedTab: string }) {
-  const {
-    profile: { blueTickEnabled },
-  } = useProfile();
   const { openNewChatWindow } = useNewChat();
   const {
     filter,
@@ -26,29 +21,7 @@ export default function Chats({ selectedTab }: { selectedTab: string }) {
     chats: { filtered, isLoading },
   } = useChats();
   const { getContact } = useContacts();
-
-  const formatTime = (timestamp: number) => {
-    const now = dayjs(timestamp);
-    return now.format("h:mm A");
-  };
-
-  const renderMessageStatus = (message: Message) => {
-    if (!message.isSentFromUser) {
-      return null;
-    } else {
-      if (message.read) {
-        if (blueTickEnabled) {
-          return <ChecksIcon className="size-5 text-blue-400" />;
-        }
-        return <ChecksIcon className="size-5 text-white/40" />;
-      } else if (message.delivered) {
-        return <ChecksIcon className="size-5 text-white/40" />;
-      } else if (message.sent) {
-        return <CheckIcon className="size-4 text-white/40" />;
-      }
-      return <WarningCircleIcon className="size-5 text-white/40" />;
-    }
-  };
+  const { loadCurrentChat } = useCurrentChat();
 
   const renderChat = (chat: Chat) => {
     const name =
@@ -58,7 +31,12 @@ export default function Chats({ selectedTab }: { selectedTab: string }) {
     const lastMessage = chat.messages[chat.messages.length - 1];
 
     return (
-      <div className="grid grid-cols-6 w-full gap-4 p-2.5 hover:bg-white/10 rounded-xl cursor-pointer">
+      <button
+        onClick={() =>
+          loadCurrentChat({ chatId: chat.id, page: 0, messages: chat.messages })
+        }
+        className="outline-none grid grid-cols-6 w-full gap-4 p-2.5 hover:bg-white/10 rounded-xl cursor-pointer"
+      >
         <div className="col-span-1">
           {!chat.group ? (
             <Profile size="12" />
@@ -73,7 +51,7 @@ export default function Chats({ selectedTab }: { selectedTab: string }) {
         <div className="col-span-3 flex flex-col justify-center items-start w-full">
           <p className="text-white">{name}</p>
           <div className="flex justify-start items-center gap-1 w-full">
-            {renderMessageStatus(lastMessage)}
+            <MessageStatusIcon message={lastMessage} />
             <p
               className={`text-sm ${
                 chat.read || lastMessage.isSentFromUser
@@ -100,7 +78,7 @@ export default function Chats({ selectedTab }: { selectedTab: string }) {
             {formatTime(lastMessage.timestamp)}
           </p>
         </div>
-      </div>
+      </button>
     );
   };
 
@@ -155,7 +133,9 @@ export default function Chats({ selectedTab }: { selectedTab: string }) {
           ))}
         </div>
       </section>
-      <section className="w-full flex flex-col gap-1">{renderChats()}</section>
+      <section className="w-full overflow-y-scroll flex flex-col gap-1">
+        {renderChats()}
+      </section>
     </section>
   );
 }

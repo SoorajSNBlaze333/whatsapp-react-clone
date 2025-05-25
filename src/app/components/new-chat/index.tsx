@@ -11,21 +11,41 @@ import Profile from "../profile";
 import { useContacts } from "@/app/hooks/use-contacts";
 import { Contact } from "@/app/context/contacts-provider";
 import { useEffect, useRef } from "react";
+import { useProfile } from "@/app/hooks/use-profile";
 
 export default function NewChatWindow() {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const { isNewChatWindowOpen, closeNewChatWindow } = useNewChat();
   const { dictionary, filterContacts, search } = useContacts();
-  // TODO: change this to profile user
-  const user = {
-    displayName: "Clara Nguyen",
-  };
+  const { profile } = useProfile();
 
   useEffect(() => {
     if (isNewChatWindowOpen && inputRef.current) {
       inputRef.current.focus();
     }
   }, [isNewChatWindowOpen]);
+
+  const renderDictionary = (entries: [string, Contact[]], index: number) => {
+    return (
+      <section key={index} className="pt-4 px-4 w-full flex flex-col gap-1">
+        {entries[1].length >= 1 && (
+          <p className="font-semibold text-white/50 pl-4 mb-4">{entries[0]}</p>
+        )}
+        {entries[1].map((contact: Contact) => (
+          <div
+            key={contact.id}
+            className="flex w-full justify-start items-center gap-4 p-2.5 hover:bg-white/10 rounded-xl cursor-pointer"
+          >
+            <Profile size="12" />
+            <div className="flex flex-col justify-center items-start">
+              <p className="text-white">{contact.displayName}</p>
+              <p className="text-white/55">{contact.statusMessage}</p>
+            </div>
+          </div>
+        ))}
+      </section>
+    );
+  };
 
   return (
     <AnimatePresence>
@@ -91,40 +111,17 @@ export default function NewChatWindow() {
                 <p className="font-semibold text-white/50 pl-4 mb-4">
                   Contacts on App
                 </p>
-                {user.displayName.includes(search) && (
+                {profile.name.includes(search) && (
                   <div className="flex w-full justify-start items-center gap-4 p-2.5 hover:bg-white/10 rounded-xl cursor-pointer">
                     <Profile size="12" />
                     <div className="flex flex-col justify-center items-start">
-                      <p className="text-white">{user.displayName} (You)</p>
+                      <p className="text-white">{profile.name} (You)</p>
                       <p className="text-white/55">Message yourself</p>
                     </div>
                   </div>
                 )}
               </section>
-              {dictionary.map((entries, index) => (
-                <section
-                  key={index}
-                  className="pt-4 px-4 w-full flex flex-col gap-1"
-                >
-                  {entries[1].length > 1 && (
-                    <p className="font-semibold text-white/50 pl-4 mb-4">
-                      {entries[0]}
-                    </p>
-                  )}
-                  {entries[1].map((contact: Contact) => (
-                    <div
-                      key={contact.id}
-                      className="flex w-full justify-start items-center gap-4 p-2.5 hover:bg-white/10 rounded-xl cursor-pointer"
-                    >
-                      <Profile size="12" />
-                      <div className="flex flex-col justify-center items-start">
-                        <p className="text-white">{contact.displayName}</p>
-                        <p className="text-white/55">{contact.statusMessage}</p>
-                      </div>
-                    </div>
-                  ))}
-                </section>
-              ))}
+              {dictionary.map(renderDictionary)}
             </section>
           </section>
         </motion.section>

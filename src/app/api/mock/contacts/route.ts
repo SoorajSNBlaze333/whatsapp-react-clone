@@ -62,6 +62,12 @@ export async function GET() {
       contactAvatar: "",
       statusMessage: "Hey there, I am using App",
     },
+    {
+      id: "9tkhacj",
+      displayName: "Jimmy Mann",
+      contactAvatar: "",
+      statusMessage: "Hey there, I am using App",
+    },
   ];
 
   return NextResponse.json(contacts);

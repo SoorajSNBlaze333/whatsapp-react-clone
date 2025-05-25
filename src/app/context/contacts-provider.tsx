@@ -62,6 +62,7 @@ export default function ContactsProvider({ children }: PropsWithChildren) {
       const response = await fetch("/api/mock/contacts");
       const data = await response.json();
       const dictionary = generateDictionary(data);
+
       setContacts((prev) => ({
         ...prev,
         contacts: data,
