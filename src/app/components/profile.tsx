@@ -1,3 +1,4 @@
+import { UserIcon } from "@phosphor-icons/react";
 import Image from "next/image";
 import { PropsWithChildren } from "react";
 
@@ -32,7 +33,11 @@ export default function Profile({
         </div>
       );
     }
-    return <div className="w-full h-full bg-amber-300"></div>;
+    return (
+      <div className="w-full h-full bg-gray-400 overflow-hidden flex justify-center items-center">
+        <UserIcon className={`text-white size-8`} weight="fill" />
+      </div>
+    );
   };
 
   return (

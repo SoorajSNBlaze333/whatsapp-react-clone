@@ -36,7 +36,7 @@ export default function NewChatWindow() {
             key={contact.id}
             className="flex w-full justify-start items-center gap-4 p-2.5 hover:bg-white/10 rounded-xl cursor-pointer"
           >
-            <Profile size="12" />
+            <Profile size="12" url={contact.contactAvatar} />
             <div className="flex flex-col justify-center items-start">
               <p className="text-white">{contact.displayName}</p>
               <p className="text-white/55">{contact.statusMessage}</p>

@@ -25,7 +25,8 @@ export default function CurrentChat() {
     } else if (reactionsCount && reactionsCount > 0) {
       return "mb-4";
     } else if (
-      messages[index].isSentFromUser === messages[index + 1]?.isSentFromUser
+      messages[index].isSentFromUser === messages[index + 1]?.isSentFromUser &&
+      messages[index].contactId === messages[index + 1]?.contactId
     ) {
       return "mb-0.5";
     }
