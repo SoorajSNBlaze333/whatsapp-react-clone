@@ -14,3 +14,9 @@ html, body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none; /* Chrome, Safari, and Opera */
 }
+
+.background-custom {
+  background-color: #ffffff;
+  opacity: 0.03;
+  background-image:  repeating-radial-gradient( circle at 0 0, transparent 0, #ffffff 10px ), repeating-linear-gradient( #17171755, #171717 );
+}

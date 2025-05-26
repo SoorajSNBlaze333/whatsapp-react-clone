@@ -6,7 +6,7 @@ import {
 import TooltipWrapper from "../tooltip-wrapper";
 import { useNewChat } from "@/app/hooks/use-new-chat";
 import { useChats } from "@/app/hooks/use-chats";
-import { Chat, Filters } from "@/app/context/chats-provider";
+import { Chat, Filters, Message } from "@/app/context/chats-provider";
 import Profile from "../profile";
 import { useContacts } from "@/app/hooks/use-contacts";
 import { useCurrentChat } from "@/app/hooks/use-current-chat";
@@ -14,19 +14,47 @@ import { formatTime } from "@/app/utils";
 import MessageStatusIcon from "../message-status-icon";
 
 export default function Chats({ selectedTab }: { selectedTab: string }) {
-  const { openNewChatWindow } = useNewChat();
+  const { openNewChatWindow, isNewChatWindowOpen } = useNewChat();
   const {
     filter,
     updateFilter,
     chats: { filtered, isLoading },
   } = useChats();
-  const { getContact } = useContacts();
-  const { loadCurrentChat } = useCurrentChat();
+  const { getContact, setIsContactTyping } = useContacts();
+  const { loadCurrentChat, contact } = useCurrentChat();
+
+  const handleTyping = () => {
+    if (contact) {
+      setIsContactTyping(contact.id, true);
+    }
+  };
+
+  const handleOnline = () => {
+    if (contact) {
+      setIsContactTyping(contact.id, false);
+    }
+  };
+
+  const getMetaMessage = (
+    chat: Chat,
+    { message, contactId }: Message
+  ): string => {
+    if (chat.group) {
+      return `${getContact(contactId)?.displayName}: ${message}`;
+    }
+    if (contact?.typing && contact.id === contactId) {
+      return "typing...";
+    }
+    return message;
+  };
 
   const renderChat = (chat: Chat) => {
+    const currentContact = getContact(
+      typeof chat.contactId === "string" ? chat.contactId : ""
+    );
     const name =
       typeof chat.contactId === "string"
-        ? getContact(chat.contactId)?.displayName
+        ? currentContact?.displayName
         : chat.groupName;
     const lastMessage = chat.messages[chat.messages.length - 1];
 
@@ -35,11 +63,15 @@ export default function Chats({ selectedTab }: { selectedTab: string }) {
         onClick={() =>
           loadCurrentChat({ chatId: chat.id, page: 0, messages: chat.messages })
         }
-        className="outline-none grid grid-cols-6 w-full gap-4 p-2.5 hover:bg-white/10 rounded-xl cursor-pointer"
+        className={`outline-none grid grid-cols-6 w-full gap-4 p-2.5 hover:bg-white/10 rounded-xl cursor-pointer ${
+          typeof chat.contactId === "string" && chat.contactId === contact?.id
+            ? "bg-white/10"
+            : ""
+        }`}
       >
         <div className="col-span-1">
           {!chat.group ? (
-            <Profile size="12" />
+            <Profile size="12" url={currentContact?.contactAvatar} />
           ) : (
             <Profile size="12">
               <div className="h-full w-full flex justify-center items-center bg-white/50">
@@ -52,19 +84,21 @@ export default function Chats({ selectedTab }: { selectedTab: string }) {
           <p className="text-white">{name}</p>
           <div className="flex justify-start items-center gap-1 w-full">
             <MessageStatusIcon message={lastMessage} />
-            <p
-              className={`text-sm ${
-                chat.read || lastMessage.isSentFromUser
-                  ? "text-white/55"
-                  : "text-white font-semibold"
-              } whitespace-nowrap truncate text-ellipsis overflow-hidden`}
-            >
-              {chat.group
-                ? `${getContact(lastMessage.contactId)?.displayName}: ${
-                    lastMessage.message
-                  }`
-                : lastMessage.message}
-            </p>
+            {contact?.typing && contact.id === lastMessage.contactId ? (
+              <p className="text-emerald-500 text-sm">
+                {getMetaMessage(chat, lastMessage)}
+              </p>
+            ) : (
+              <p
+                className={`text-sm ${
+                  chat.read || lastMessage.isSentFromUser
+                    ? "text-white/55"
+                    : "text-white font-semibold"
+                } whitespace-nowrap truncate text-ellipsis overflow-hidden`}
+              >
+                {getMetaMessage(chat, lastMessage)}
+              </p>
+            )}
           </div>
         </div>
         <div className="col-span-2 flex flex-col justify-center items-end">
@@ -95,7 +129,7 @@ export default function Chats({ selectedTab }: { selectedTab: string }) {
   };
 
   return (
-    <section className="w-full flex flex-col gap-3 p-4 relative">
+    <section className="w-full h-full flex flex-col gap-3 p-4 relative">
       <section className="w-full flex justify-between items-center">
         <p className="text-white text-2xl font-semibold capitalize">
           {selectedTab}
@@ -136,6 +170,22 @@ export default function Chats({ selectedTab }: { selectedTab: string }) {
       <section className="w-full overflow-y-scroll flex flex-col gap-1">
         {renderChats()}
       </section>
+      {!isNewChatWindowOpen && (
+        <section className="absolute flex justify-start items-center gap-2 z-50 bottom-4 left-4">
+          <button
+            className="rounded-full p-1 px-3 bg-emerald-700 text-white text-xs cursor-pointer"
+            onClick={handleTyping}
+          >
+            Typing
+          </button>
+          <button
+            className="rounded-full p-1 px-3 bg-emerald-700 text-white text-xs cursor-pointer"
+            onClick={handleOnline}
+          >
+            Online
+          </button>
+        </section>
+      )}
     </section>
   );
 }

@@ -1,9 +1,11 @@
+import Image from "next/image";
 import { PropsWithChildren } from "react";
 
 export default function Profile({
   children,
   size,
-}: PropsWithChildren<{ size?: string }>) {
+  url,
+}: PropsWithChildren<{ size?: string; url?: string }>) {
   const sizeClass =
     {
       6: "w-6 h-6",
@@ -14,11 +16,26 @@ export default function Profile({
       12: "w-12 h-12",
     }[size ?? 7] ?? "w-7 h-7";
 
+  const renderAvatar = () => {
+    if (url && url.length > 0) {
+      return (
+        <Image
+          src={url}
+          className={sizeClass}
+          height={20}
+          width={20}
+          alt="profile"
+        />
+      );
+    }
+    return <div className="w-full h-full bg-amber-300"></div>;
+  };
+
   return (
     <section
       className={`${sizeClass} overflow-hidden relative flex justify-center items-center rounded-full cursor-pointer`}
     >
-      {children ?? <div className="w-full h-full bg-red-400"></div>}
+      {children ?? renderAvatar()}
     </section>
   );
 }

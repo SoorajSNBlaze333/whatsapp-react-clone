@@ -5,37 +5,37 @@ export async function GET() {
     {
       id: "F66d8fn",
       displayName: "Linnie Frazier",
-      contactAvatar: "",
+      contactAvatar: "/lf.jpg",
       statusMessage: "Hey there, I am using App",
     },
     {
       id: "ZeEMJ5a",
       displayName: "Victoria Mason",
-      contactAvatar: "",
+      contactAvatar: "/vm.jpg",
       statusMessage: "Hey there, I am using App",
     },
     {
       id: "HdoSv2h",
       displayName: "Lettie Graves",
-      contactAvatar: "",
+      contactAvatar: "/lg.jpg",
       statusMessage: "Hey there, I am using App",
     },
     {
       id: "pOtsxq8",
       displayName: "Sue Saunders",
-      contactAvatar: "",
+      contactAvatar: "/ss.jpg",
       statusMessage: "Hey there, I am using App",
     },
     {
       id: "8KYNlgL",
       displayName: "Alfred Howard",
-      contactAvatar: "",
+      contactAvatar: "/ah.jpg",
       statusMessage: "Hey there, I am using App",
     },
     {
       id: "rYChRQg",
       displayName: "Maude Holloway",
-      contactAvatar: "",
+      contactAvatar: "/mh.jpg",
       statusMessage: "Hey there, I am using App",
     },
     {

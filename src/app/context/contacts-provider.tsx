@@ -5,6 +5,7 @@ export type Contact = {
   displayName: string;
   contactAvatar: string;
   statusMessage: string;
+  typing?: boolean;
 };
 
 export type Contacts = {
@@ -18,6 +19,7 @@ export type Contacts = {
 export type ContactsContextType = Contacts & {
   filterContacts: (search: string) => void;
   getContact: (id: string) => Contact | undefined;
+  setIsContactTyping: (id: string, typing: boolean) => void;
 };
 
 export const ContactsContext = createContext<ContactsContextType | undefined>(
@@ -108,9 +110,23 @@ export default function ContactsProvider({ children }: PropsWithChildren) {
     return contact;
   };
 
+  const setIsContactTyping = (id: string, typing: boolean) => {
+    const contactIndex = contacts.contacts.findIndex(
+      (contact: Contact) => contact.id === id
+    );
+    if (contactIndex) {
+      const updatedContacts = [...contacts.contacts];
+      updatedContacts[contactIndex].typing = typing;
+      setContacts((prev) => ({
+        ...prev,
+        contacts: [...updatedContacts],
+      }));
+    }
+  };
+
   return (
     <ContactsContext.Provider
-      value={{ ...contacts, filterContacts, getContact }}
+      value={{ ...contacts, filterContacts, getContact, setIsContactTyping }}
     >
       {children}
     </ContactsContext.Provider>

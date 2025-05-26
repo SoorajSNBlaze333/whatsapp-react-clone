@@ -26,12 +26,24 @@ export async function GET() {
           delivered: true,
           sent: true,
           read: true,
+          reactions: [
+            {
+              emoji: "😮",
+              count: 1,
+            },
+          ],
         },
         {
           contactId: "F66d8fn",
           message: "Could you please send them right now?",
           timestamp: 1747662290,
           isSentFromUser: false,
+          reactions: [
+            {
+              emoji: "👍🏼",
+              count: 1,
+            },
+          ],
         },
       ],
     },

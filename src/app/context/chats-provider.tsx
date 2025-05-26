@@ -7,6 +7,11 @@ export enum Filters {
   GROUPS = "groups",
 }
 
+export type ReactionType = {
+  emoji: string;
+  count: number;
+};
+
 export type Message = {
   contactId: string;
   message: string;
@@ -15,6 +20,7 @@ export type Message = {
   read?: boolean;
   sent?: boolean;
   delivered?: boolean;
+  reactions?: ReactionType[];
 };
 
 export type Chat = {
