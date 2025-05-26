@@ -2,8 +2,12 @@ import Profile from "./profile";
 import TooltipWrapper from "./tooltip-wrapper";
 import { useTab } from "../hooks/use-tab";
 import TabIcon from "./tab-icon";
+import { useProfile } from "../hooks/use-profile";
 
 export default function TabIcons() {
+  const {
+    profile: { avatarUrl },
+  } = useProfile();
   const { selectedTab, selectTab, topTabs } = useTab();
 
   return (
@@ -42,7 +46,7 @@ export default function TabIcons() {
           <TabIcon tab="settings" />
         </TooltipWrapper>
         <TooltipWrapper tab="profile" onClick={() => selectTab("profile")}>
-          <Profile />
+          <Profile url={avatarUrl} />
         </TooltipWrapper>
       </section>
     </section>

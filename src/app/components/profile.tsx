@@ -19,13 +19,17 @@ export default function Profile({
   const renderAvatar = () => {
     if (url && url.length > 0) {
       return (
-        <Image
-          src={url}
-          className={sizeClass}
-          height={20}
-          width={20}
-          alt="profile"
-        />
+        <div
+          className={`${sizeClass} bg-amber-300 flex justify-center items-center`}
+        >
+          <Image
+            src={url}
+            className={sizeClass}
+            height={20}
+            width={20}
+            alt="profile"
+          />
+        </div>
       );
     }
     return <div className="w-full h-full bg-amber-300"></div>;

@@ -42,7 +42,7 @@ export default function Reaction({
               transition: { type: "spring", bounce: 0.5, duration: 0.5 },
             },
           }}
-          className="bg-black overflow-hidden rounded-full absolute -top-16"
+          className="bg-black overflow-hidden rounded-full absolute z-50 -top-16"
         >
           <motion.div
             variants={{

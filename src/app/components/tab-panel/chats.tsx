@@ -21,7 +21,7 @@ export default function Chats({ selectedTab }: { selectedTab: string }) {
     chats: { filtered, isLoading },
   } = useChats();
   const { getContact, setIsContactTyping } = useContacts();
-  const { loadCurrentChat, contact } = useCurrentChat();
+  const { loadCurrentChat, contact, addNewMessage } = useCurrentChat();
 
   const handleTyping = () => {
     if (contact) {
@@ -171,7 +171,7 @@ export default function Chats({ selectedTab }: { selectedTab: string }) {
         {renderChats()}
       </section>
       {!isNewChatWindowOpen && (
-        <section className="absolute flex justify-start items-center gap-2 z-50 bottom-4 left-4">
+        <section className="absolute flex justify-start items-center gap-2 z-40 bottom-4 left-4">
           <button
             className="rounded-full p-1 px-3 bg-emerald-700 text-white text-xs cursor-pointer"
             onClick={handleTyping}
@@ -183,6 +183,12 @@ export default function Chats({ selectedTab }: { selectedTab: string }) {
             onClick={handleOnline}
           >
             Online
+          </button>
+          <button
+            className="rounded-full p-1 px-3 bg-emerald-700 text-white text-xs cursor-pointer"
+            onClick={addNewMessage}
+          >
+            New Message
           </button>
         </section>
       )}

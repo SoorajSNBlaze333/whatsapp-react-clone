@@ -5,6 +5,7 @@ export async function GET() {
     id: "9tkhacj",
     name: "Jimmy Mann",
     blueTickEnabled: true,
+    avatarUrl: "/mh.jpg",
   };
 
   return NextResponse.json(profile);

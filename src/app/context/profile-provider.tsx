@@ -4,6 +4,7 @@ export type Profile = {
   id: string;
   name: string;
   blueTickEnabled: boolean;
+  avatarUrl: string;
 };
 
 export const ProfileContext = createContext<
@@ -23,6 +24,7 @@ export default function ProfileProvider({ children }: PropsWithChildren) {
       id: "",
       name: "",
       blueTickEnabled: false,
+      avatarUrl: "",
     },
     isLoading: false,
   });

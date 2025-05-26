@@ -3,6 +3,7 @@ import { Chat, Message } from "./chats-provider";
 import { useChats } from "../hooks/use-chats";
 import { useContacts } from "../hooks/use-contacts";
 import { Contact } from "./contacts-provider";
+import { getTimestamp } from "../utils";
 
 export type CurrentChatContacts = {
   [contactId: string]: Contact | undefined;
@@ -25,6 +26,7 @@ export type CurrentChatData = {
 
 export type CurrentChat = CurrentChatData & {
   loadCurrentChat: (chat: Partial<CurrentChatData>) => void;
+  addNewMessage: () => void;
 };
 
 export const CurrentChatContext = createContext<undefined | CurrentChat>(
@@ -43,22 +45,29 @@ export default function CurrentChatProvider({ children }: PropsWithChildren) {
   const {
     chats: { complete },
   } = useChats();
-  const { contacts } = useContacts();
+  const { contacts, setIsContactTyping } = useContacts();
 
-  // useEffect(() => {
-  //   const fetchProfile = async () => {
-  //     setProfile((prev) => ({ ...prev, isLoading: true }));
-  //     const response = await fetch("/api/mock/profile");
-  //     const data = await response.json();
-  //     setProfile((prev) => ({
-  //       ...prev,
-  //       profile: data,
-  //       isLoading: false,
-  //     }));
-  //   };
+  useEffect(() => {
+    const fetchMessages = async () => {
+      setCurrentChat((prev) => ({ ...prev, isLoading: true }));
+      const response = await fetch(
+        `/api/mock/messages?page=${currentChat.page}`
+      );
+      const data = await response.json();
+      setCurrentChat((prev) => ({
+        ...prev,
+        messages:
+          data.contactId === prev.contact?.id
+            ? currentChat.page > 0
+              ? [...data.messages, ...prev.messages]
+              : [...data.messages]
+            : [...prev.messages],
+        isLoading: false,
+      }));
+    };
 
-  //   fetchProfile();
-  // }, []);
+    fetchMessages();
+  }, [currentChat.chatId, currentChat.page]);
 
   useEffect(() => {
     const chat = complete.find((chat: Chat) => chat.id === currentChat.chatId);
@@ -102,8 +111,31 @@ export default function CurrentChatProvider({ children }: PropsWithChildren) {
     }));
   };
 
+  const addNewMessage = () => {
+    if (currentChat.contact) {
+      const contactId = currentChat.contact?.id;
+
+      setIsContactTyping(contactId, true);
+      setCurrentChat((prev) => ({
+        ...prev,
+        messages: [
+          ...prev.messages,
+          {
+            contactId,
+            message: "Hey!",
+            timestamp: getTimestamp(),
+            isSentFromUser: false,
+          },
+        ],
+      }));
+      setIsContactTyping(contactId, false);
+    }
+  };
+
   return (
-    <CurrentChatContext.Provider value={{ ...currentChat, loadCurrentChat }}>
+    <CurrentChatContext.Provider
+      value={{ ...currentChat, loadCurrentChat, addNewMessage }}
+    >
       {children}
     </CurrentChatContext.Provider>
   );
